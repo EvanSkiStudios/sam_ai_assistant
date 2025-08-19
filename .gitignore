@@ -1,0 +1,13 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+SAM/.env
+/SAM/memories/meet_the_robinsons
+/SAM/memories/users
+/SAM/memories/__pycache__
+/SAM/__pycache__
+/SAM/.idea
+/SAM/images
+SAM/memories/__consent_users.json
+SAM/memories/__things_you_know.json

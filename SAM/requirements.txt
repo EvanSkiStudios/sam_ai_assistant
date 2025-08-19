@@ -1,0 +1,9 @@
+discord~=2.3.2
+dotenv~=0.9.9
+python-dotenv~=1.1.0
+ollama~=0.4.7
+requests~=2.32.4
+emoji~=2.14.1
+regex~=2024.11.6
+numpy~=2.2.6
+ijson~=3.4.0
