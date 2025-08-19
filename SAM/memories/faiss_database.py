@@ -5,6 +5,10 @@ import json
 import ollama
 
 
+embedding_model = "nomic-embed-text"
+# "snowflake-arctic-embed2"
+
+
 def faiss_index_delete(user_name):
     # todo - called from message memory manager remove_user_conversation_file
     # will remove faiss database
@@ -83,7 +87,7 @@ def build_or_load_faiss_index(user_name):
         # Embed only new messages
         new_vectors = []
         for text in texts_for_embedding:
-            resp = ollama.embed(model="snowflake-arctic-embed2", input=text)
+            resp = ollama.embed(model=embedding_model, input=text)
             new_vectors.append(resp["embeddings"][0])
 
         new_vectors = np.array(new_vectors, dtype="float32")
@@ -119,7 +123,7 @@ def _build_from_scratch(paired_messages, index_path, metadata_path, embeddings_p
 
     embedding_vectors = []
     for text in texts_for_embedding:
-        resp = ollama.embed(model="snowflake-arctic-embed2", input=text)
+        resp = ollama.embed(model=embedding_model, input=text)
         embedding_vectors.append(resp["embeddings"][0])
 
     embedding_vectors = np.array(embedding_vectors, dtype="float32")
@@ -141,7 +145,7 @@ def _build_from_scratch(paired_messages, index_path, metadata_path, embeddings_p
 def search_faiss_index(query, index, metadata, top_k=3, max_distance=2.0):
     # Embed the query
     resp = ollama.embed(
-        model="snowflake-arctic-embed2",
+        model=embedding_model,
         input=query
     )
 

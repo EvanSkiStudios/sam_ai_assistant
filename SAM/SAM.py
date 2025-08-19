@@ -19,9 +19,9 @@ sam_model_name = 'SAM_llama3.2'
 sam_ollama_model = 'llama3.2'
 
 # used for conversations
-sam_current_session_chat_cache = {}
+sam_current_session_chat_cache = {}  # holds everyone's messages under their username as a key
 current_conversation_user = None
-current_user_conversation_messages = []
+current_user_conversation_messages = []  # holds the current users messages to be added to the session cache
 
 
 def session_information():
@@ -180,7 +180,9 @@ async def switch_current_user_speaking_too(user_name):
         current_user_conversation_messages[:] = json.loads(cached)
     else:
         current_user_conversation_messages[:] = await gather_current_user_message_history(user_name)
-        current_conversation_user = user_name
+
+    # at the end switch to the new user
+    current_conversation_user = user_name
 
 
 def update_conversation_history(user_name, new_messages):
