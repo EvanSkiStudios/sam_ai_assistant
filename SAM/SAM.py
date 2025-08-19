@@ -50,7 +50,7 @@ def build_system_prompt(user_name, user_nickname):
     factoids = random_factoids()
     current_time = current_date_time()
     return (
-            sam_rules +
+            sam_rules + factoids + current_time +
             f"You are currently talking to {user_name}. " +
             f"Their name is {user_name}. " +
             f"Their discord name is {user_nickname}. " +
