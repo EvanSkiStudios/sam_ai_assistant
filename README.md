@@ -21,13 +21,13 @@
  See the [Wiki](https://github.com/EvanSkiStudios/flukebot/wiki) for more information  
  
  ### Discord Images
- Provided by Unsplash
+ Provided by Unsplash  
  https://unsplash.com/photos/abstract-blue-lines-and-dots-on-black-background-KKx5r-w1dPo  
  https://unsplash.com/photos/a-blue-background-with-lines-and-dots-xuTJZ7uD7PI  
  https://unsplash.com/license  
 
  ### Bots this Bot will Interact with
- [Jbax1899's](https://github.com/jbax1899) ---- [RolyBot](https://github.com/jbax1899/RolyBot)  [Daneel](https://github.com/jbax1899/Daneel)    
+ [Jbax1899's](https://github.com/jbax1899) ---- [RolyBot](https://github.com/jbax1899/RolyBot),  [Daneel](https://github.com/jbax1899/Daneel)    
  [Mercerenies'](https://github.com/Mercerenies) ---- [Marco](https://github.com/Mercerenies/marco-bot)     
  [Circaurus'](https://github.com/Circaurus) --- [Shawbot](https://github.com/Circaurus/Shawbot)  
  [Lukanibal's](https://github.com/Lukanibal) --- [Beelzebot](https://github.com/Lukanibal/Beelzebot)  

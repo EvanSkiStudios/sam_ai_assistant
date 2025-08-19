@@ -8,7 +8,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from emoji_reactions_manager import llm_emoji_react_to_message, gather_server_emotes
-from flukebot import Flukebot_Create, Flukebot_Message
+from SAM import Flukebot_Create, Flukebot_Message
 
 # Load Env
 load_dotenv()
@@ -29,7 +29,7 @@ intents.emojis_and_stickers = True
 
 activity_status = bc.command_set_activity()
 
-command_prefix = "$fb "
+command_prefix = "$s "
 client = commands.Bot(
     command_prefix=command_prefix,
     intents=intents,
@@ -43,8 +43,8 @@ emote_dict = {}
 class MyHelpCommand(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         help_message = """
-For Full documentation see: [The Github Repo](<https://github.com/EvanSkiStudios/flukebot>)
-Commands are issued like so: `$fb <command> <argument>`
+For Full documentation see: [The Github Repo](<https://github.com/EvanSkiStudios/sam_ai_assistant>)
+Commands are issued like so: `$s <command> <argument>`
 ```Here are my commands:
 """
         for cog, commands_list in mapping.items():
@@ -94,12 +94,12 @@ async def status(ctx, *, arg=None):
     await bc.command_status(client, ctx, arg)
 
 
-@client.command(help="Sets the conversation history between you and FlukeBot, depending on the argument")
+@client.command(help="Sets the conversation history between you and S.A.M, depending on the argument")
 async def history(ctx, arg=None):
     await bc.command_history(ctx, arg)
 
 
-@client.command(help="Deletes the supplied Flukebot messages by id")
+@client.command(help="Deletes the supplied S.A.M messages by id")
 async def delete(ctx, *, arg=None):
     await bc.command_delete(client, ctx, arg)
 
@@ -217,8 +217,8 @@ async def on_message(message):
         await llm_chat(message, username, user_nickname, message_content)
         return
 
-    # if the message includes "flukebot" it will trigger and run the code
-    if message_lower.find('flukebot') != -1:
+    # if the message includes "sam" it will trigger and run the code
+    if message_lower.find('sam') != -1:
         await llm_chat(message, username, user_nickname, message_lower)
         return
 

@@ -5,7 +5,7 @@ from pathlib import Path
 from ollama import Client, chat
 
 from Tools.gemma_vision import download_image, image_cleanup
-from flukebot_ruleset import flukebot_personality
+from SAM_ruleset import flukebot_personality
 from memories.custom_facts import random_factoids
 from memories.meet_the_robinsons import fetch_chatter_description
 from memories.message_memory_manager import gather_current_user_message_history, stash_user_conversation_history
