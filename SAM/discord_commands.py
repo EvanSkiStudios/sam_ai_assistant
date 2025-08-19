@@ -14,7 +14,7 @@ def command_set_activity(current_activity=None):
         discord.Activity(type=discord.ActivityType.watching, name="Shrek 7"),
         discord.CustomActivity(name="Writing Mercanski fanfiction", emoji=' '),
         discord.CustomActivity(name="Cheering Alyssa on!", emoji='🥳'),
-        discord.CustomActivity(name="<coroutine object FlukeBot at 0x000001AB2C3D4567>", emoji=' '),
+        discord.CustomActivity(name="<coroutine object S.A.M at 0x000001AB2C3D4567>", emoji=' '),
         None  # Clear status
     ]
 
@@ -80,7 +80,7 @@ async def command_history(ctx, arg):
 In order to save conversation history I require consent to save your discord messages.
 Only the messages you send to me will be saved and only used to remember details and conversation history.
 Your conversation history is never sold or given to anyone or any 3rd party.
-At any point you can run the command "$fb clearhistory" to remove your conversation history.
+At any point you can run the command "$s clearhistory" to remove your conversation history.
 Please send me a DM with "save history" to opt in. or "delete history" to opt out.
 """
         await ctx.reply(ctx.author.mention + information_message)

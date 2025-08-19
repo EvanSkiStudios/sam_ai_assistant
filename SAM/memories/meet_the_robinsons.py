@@ -16,7 +16,7 @@ def fetch_chatter_description(username):
         print(f'⚠️ No User Details for {username}')
         return ""
 
-    user_detail_string = f"Here is what you know about {username}: "
+    user_detail_string = f"This is some facts about {username}: "
 
     # Load the message history
     with open(user_details_file, "r") as f:

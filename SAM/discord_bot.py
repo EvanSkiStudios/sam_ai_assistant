@@ -8,7 +8,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from emoji_reactions_manager import llm_emoji_react_to_message, gather_server_emotes
-from SAM import Flukebot_Create, Flukebot_Message
+from SAM import SAM_Create, SAM_Message
 
 # Load Env
 load_dotenv()
@@ -58,7 +58,7 @@ Commands are issued like so: `$s <command> <argument>`
 client.help_command = MyHelpCommand()
 
 # Startup LLM
-Flukebot_Create()
+SAM_Create()
 
 
 # --------- BOT EVENTS ---------
@@ -124,7 +124,7 @@ async def llm_chat(message, username, user_nickname, message_content):
                 # currently only looks at one image if there are multiple
             # print(message.content) # gifs from the panel are just message content - currently cant see gifs anyway
 
-        response = await Flukebot_Message(username, user_nickname, message_content, attachment_url, attachments)
+        response = await SAM_Message(username, user_nickname, message_content, attachment_url, attachments)
 
     if response == -1:
         return

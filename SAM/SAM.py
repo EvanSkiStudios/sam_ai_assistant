@@ -5,39 +5,39 @@ from pathlib import Path
 from ollama import Client, chat
 
 from Tools.gemma_vision import download_image, image_cleanup
-from SAM_ruleset import flukebot_personality
+from SAM_ruleset import SAM_personality
 from memories.custom_facts import random_factoids
 from memories.meet_the_robinsons import fetch_chatter_description
 from memories.message_memory_manager import gather_current_user_message_history, stash_user_conversation_history
 from utility_scripts.utility import current_date_time, split_response
 
 # import from ruleset
-flukebot_rules = flukebot_personality
+sam_rules = SAM_personality
 
 # model settings for easy swapping
-flukebot_model_name = 'flukebot_llama3.2'
-flukebot_ollama_model = 'llama3.2'
+sam_model_name = 'SAM_llama3.2'
+sam_ollama_model = 'llama3.2'
 
 # used for conversations
-flukebot_current_session_chat_cache = {}
+sam_current_session_chat_cache = {}
 current_conversation_user = None
 current_user_conversation_messages = []
 
 
 def session_information():
     return (
-        flukebot_current_session_chat_cache,
+        sam_current_session_chat_cache,
         current_conversation_user,
         current_user_conversation_messages,
     )
 
 
-def Flukebot_Create():
+def SAM_Create():
     client = Client()
     response = client.create(
-        model=flukebot_model_name,
-        from_=flukebot_ollama_model,
-        system=flukebot_rules,
+        model=sam_model_name,
+        from_=sam_ollama_model,
+        system=sam_rules,
         stream=False,
     )
     print(f"# Client: {response.status}")
@@ -50,18 +50,17 @@ def build_system_prompt(user_name, user_nickname):
     factoids = random_factoids()
     current_time = current_date_time()
     return (
-            flukebot_rules + "\n" +
-            factoids + "\n" +
-            current_time + "\n" +
-            f"You are currently talking to {user_name}. Their name is {user_name}.\n" +
-            f"Their display name is {user_nickname}.\n" +
-            f"If {user_name} asks what their name is, use their display name.\n" +
+            sam_rules +
+            f"You are currently talking to {user_name}. " +
+            f"Their name is {user_name}. " +
+            f"Their discord name is {user_nickname}. " +
+            f"Refer to {user_name} as {user_nickname} unless otherwise specified." +
             current_user_details
     )
 
 
 # === Main Entry Point ===
-async def Flukebot_Message(message_author_name, message_author_nickname, message_content, attachment_url, attachments):
+async def SAM_Message(message_author_name, message_author_nickname, message_content, attachment_url, attachments):
     llm_response = None
 
     if attachment_url:
@@ -69,21 +68,21 @@ async def Flukebot_Message(message_author_name, message_author_nickname, message
         image_file_name = await loop.run_in_executor(None, download_image, attachment_url)
 
         if image_file_name:
-            llm_response = await Flukebot_Converse_Image(
+            llm_response = await SAM_Converse_Image(
                 message_author_name, message_author_nickname, message_content, image_file_name, attachments
             )
         else:
             print("IMAGE ERROR")
 
     if llm_response is None:
-        llm_response = await Flukebot_Converse(message_author_name, message_author_nickname, message_content)
+        llm_response = await SAM_Converse(message_author_name, message_author_nickname, message_content)
 
     cleaned = llm_response.replace("'", "\\'")
     return split_response(cleaned)
 
 
 # === Core Logic ===
-async def Flukebot_Converse(user_name, user_nickname, user_input):
+async def SAM_Converse(user_name, user_nickname, user_input):
     # check who we are currently talking too - if someone new is talking to us, fetch their memories
     # if it's a different user, cache the current history to file the swap out the memories
     await switch_current_user_speaking_too(user_name)
@@ -96,7 +95,7 @@ async def Flukebot_Converse(user_name, user_nickname, user_input):
     # should prevent discord heartbeat from complaining we are taking too long
     response = await asyncio.to_thread(
         chat,
-        model=flukebot_model_name,
+        model=sam_model_name,
         messages=full_prompt
     )
 
@@ -117,7 +116,7 @@ async def Flukebot_Converse(user_name, user_nickname, user_input):
     return response.message.content
 
 
-async def Flukebot_Converse_Image(user_name, user_nickname, user_input, image_file_name, attachments):
+async def SAM_Converse_Image(user_name, user_nickname, user_input, image_file_name, attachments):
     # check who we are currently talking too - if someone new is talking to us, fetch their memories
     # if it's a different user, cache the current history to file the swap out the memories
     await switch_current_user_speaking_too(user_name)
@@ -174,7 +173,7 @@ async def switch_current_user_speaking_too(user_name):
     print(f"⚠️ SWITCHING CONVERSER FROM {current_conversation_user} > {user_name}")
 
     # check if we have already spoken to this person this session
-    cached = flukebot_current_session_chat_cache.get(user_name)
+    cached = sam_current_session_chat_cache.get(user_name)
     # print(cached)
     if cached:
         print(f"✅ FOUND USER CACHE FOR {user_name}")
@@ -186,7 +185,7 @@ async def switch_current_user_speaking_too(user_name):
 
 def update_conversation_history(user_name, new_messages):
     current_user_conversation_messages.extend(new_messages)
-    flukebot_current_session_chat_cache[user_name] = json.dumps(current_user_conversation_messages)
+    sam_current_session_chat_cache[user_name] = json.dumps(current_user_conversation_messages)
     stash_user_conversation_history(user_name, new_messages)
     # print(current_user_conversation_messages)
-    # print(flukebot_current_session_chat_cache)
+    # print(sam_current_session_chat_cache)
