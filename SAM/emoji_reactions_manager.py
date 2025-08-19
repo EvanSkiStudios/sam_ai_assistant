@@ -43,6 +43,7 @@ dictation_rules = (
     "You are a simple input output machine. \
     The user will feed you a chat message. If you feel strongly about the message, \
     reply with a single or multiple emojis. Otherwise, respond with \"No reaction\". \
+    You do not have to respond, you can just give \"No reaction\". \
     You are only allowed to speak with emoji or only \"No reaction\". \
     Try to keep the max amount emojis in a response to 3 at most."
 )
@@ -113,11 +114,13 @@ or just respond with a normal emoji or \"No reaction\".
 So your response should be only emojis, the name of a special emoji, or \"No reaction\".
 """
 
+emoji_llm = 'llama3.2'
+
 
 async def llm_emoji_react_to_message(content, emote_dict):
     client = AsyncClient()
     response = await client.chat(
-        model='llama3.2',
+        model=emoji_llm,
         messages=[
             {"role": "system", "content": dictation_rules + custom_emojis + custom_emojis_two + reconfirmation},
             {"role": "user", "content": content}

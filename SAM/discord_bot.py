@@ -217,8 +217,8 @@ async def on_message(message):
         await llm_chat(message, username, user_nickname, message_content)
         return
 
-    # if the message includes "sam" it will trigger and run the code
-    if message_lower.find('sam') != -1:
+    # if the message includes "sam " it will trigger and run the code
+    if message_lower.find('sam ') != -1:
         await llm_chat(message, username, user_nickname, message_lower)
         return
 
