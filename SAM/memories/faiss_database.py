@@ -198,8 +198,9 @@ def get_relevant_messages(query, index, metadata):
     flattened_messages = [msg for group in message_groups for msg in group]
 
     # Convert the whole flattened list to JSON once
-    json_str = json.dumps(flattened_messages, ensure_ascii=False, indent=2)
-    return json_str
+    json_str = json.dumps(flattened_messages, ensure_ascii=False, indent=2)  # Python object → string
+    parsed = json.loads(json_str)  # string → Python object
+    return parsed
 
 
 def Test_database():

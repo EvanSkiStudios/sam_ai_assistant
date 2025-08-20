@@ -223,6 +223,10 @@ async def on_message(message):
         await llm_chat(message, username, user_nickname, message_lower)
         return
 
+    if message_lower.endswith('sam'):
+        await llm_chat(message, username, user_nickname, message_lower)
+        return
+
 
 # Startup discord Bot
 client.run(BOT_TOKEN)

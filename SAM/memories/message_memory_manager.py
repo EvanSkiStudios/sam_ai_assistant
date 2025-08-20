@@ -3,6 +3,10 @@ import os
 
 from memories.faiss_database import build_or_load_faiss_index, get_relevant_messages, faiss_index_delete
 from utility_scripts.json_load_20 import json_get_last_n
+from utility_scripts.system_logging import setup_logger
+
+# configure logging
+logger = setup_logger(__name__)
 
 # get locations
 memories_dir = os.path.dirname(os.path.realpath(__file__))
@@ -11,8 +15,8 @@ memories_dir = os.path.dirname(os.path.realpath(__file__))
 def gather_relevant_history(user_name, user_response):
     faiss_data = build_or_load_faiss_index(user_name)
     if faiss_data is None:
-        # todo -- handle error
-        return
+        logger.warning(f"⚠️ No Faiss found for {user_name}")
+        return []
 
     relevant_messages = get_relevant_messages(user_response, faiss_data["index"], faiss_data["metadata"])
     # todo -- probably some future error handling here
@@ -20,14 +24,14 @@ def gather_relevant_history(user_name, user_response):
     return relevant_messages
 
 
-async def gather_current_user_message_history(user_name):
+async def gather_current_user_message_history(user_name, user_response):
     users_dir = os.path.join(memories_dir, 'users')
     user_folder = os.path.join(users_dir, user_name)
 
     user_conversation_memory_file = os.path.join(user_folder, f"{user_name}.json")
 
     if not os.path.exists(user_conversation_memory_file):
-        print(f"⚠️ No memories found for {user_name}")
+        logger.warning(f"⚠️ No memories found for {user_name}")
         return []
 
     # Load the message history
@@ -36,10 +40,8 @@ async def gather_current_user_message_history(user_name):
     # Load the message history
     with open(user_conversation_memory_file, "r") as f:
         message_history_references = json.load(f)
-        # print(f"{message_history_references}")
 
-    print(f"✅ Finished processing memories")
-
+    logger.info(f"✅ Finished processing memories")
     return message_history_references
 
 
@@ -47,7 +49,7 @@ def stash_user_conversation_history(user_name, conversation_data):
     consent_file = os.path.join(memories_dir, "__consent_users.json")
 
     if not os.path.exists(consent_file):
-        print("❌❌❌ Can not find user consent file!!")
+        logger.error("❌❌❌ Can not find user consent file!!")
         return
 
     # Load the existing data
@@ -66,7 +68,7 @@ def stash_user_conversation_history(user_name, conversation_data):
     user_conversation_memory_file = os.path.join(user_folder, f"{user_name}.json")
 
     if os.path.exists(user_conversation_memory_file):
-        print(f"☁️ Memories found for: {user_name}")
+        logger.info(f"☁️ Memories found for: {user_name}")
 
         # Step 1: Read the original JSON file
         with open(user_conversation_memory_file, "r") as f:
@@ -80,10 +82,10 @@ def stash_user_conversation_history(user_name, conversation_data):
         with open(user_conversation_memory_file, "w") as f:
             json.dump(message_history_references, f, indent=4)  # Pretty print is optional
 
-        print(f"✅ Memories Saved")
+        logger.info(f"✅ Memories Saved")
 
     else:
-        print(f"⚠️ Creating New Memories for: {user_name}")
+        logger.warning(f"⚠️ Creating New Memories for: {user_name}")
         with open(user_conversation_memory_file, "w") as f:
             json.dump(conversation_data, f)
         f.close()
