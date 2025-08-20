@@ -132,6 +132,7 @@ async def llm_chat(message, username, user_nickname, message_content):
     for i, part in enumerate(response):
         if not message.author.bot and i == 0:
             await message.reply(part)
+            # message_id = sent_message.id
         else:
             await message.channel.send(part)
 

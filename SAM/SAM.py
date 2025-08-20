@@ -17,6 +17,7 @@ sam_rules = SAM_personality
 # model settings for easy swapping
 sam_model_name = 'SAM_llama3.2'
 sam_ollama_model = 'llama3.2'
+sam_vision_model = 'gemma3'
 
 # used for conversations
 sam_current_session_chat_cache = {}  # holds everyone's messages under their username as a key
@@ -49,14 +50,26 @@ def build_system_prompt(user_name, user_nickname):
 
     factoids = random_factoids()
     current_time = current_date_time()
-    return (
-            sam_rules + factoids + current_time +
-            f"You are currently talking to {user_name}. " +
-            f"Their name is {user_name}. " +
-            f"Their discord name is {user_nickname}. " +
-            f"Refer to {user_name} as {user_nickname} unless otherwise specified." +
-            current_user_details
-    )
+
+    system_prompt = f"""{sam_rules}
+{factoids}
+{current_time}
+You are currently talking to {user_name}.
+Their name is {user_name}.  
+Their discord name is {user_nickname}. 
+Refer to {user_name} as {user_nickname} unless otherwise specified. 
+{current_user_details}
+"""
+    return system_prompt
+
+    # return (
+    #        sam_rules + factoids + current_time +
+    #        f"You are currently talking to {user_name}. " +
+    #        f"Their name is {user_name}. " +
+    #        f"Their discord name is {user_nickname}. " +
+    #        f"Refer to {user_name} as {user_nickname} unless otherwise specified." +
+    #        current_user_details
+    # )
 
 
 # === Main Entry Point ===
@@ -134,7 +147,7 @@ async def SAM_Converse_Image(user_name, user_nickname, user_input, image_file_na
 
     response = await asyncio.to_thread(
         chat,
-        model='gemma3',
+        model=sam_vision_model,
         messages=full_prompt + [{"role": "user", "name": user_name, "content": user_input, 'images': [path]}]
         # options={'temperature': 0},  # Make responses more deterministic
     )
