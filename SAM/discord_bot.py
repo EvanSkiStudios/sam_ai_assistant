@@ -20,6 +20,7 @@ BOT_DM_CHANNEL_ID = os.getenv("DM_CHANNEL_ID")
 BOT_CHANNEL_ID = os.getenv("GMCD_CHANNEL_ID")
 GMC_DISCUSSION_THREAD = os.getenv("GMCD_NOT_ALLOWED_THREAD_D")
 GMC_NO_CONTEXT_THREAD = os.getenv("GMCD_NOT_ALLOWED_THREAD_NC")
+GMC_DANEEL_THREAD = os.getenv("GMCD_DANEEL_STINKY")
 
 # set discord intents
 intents = discord.Intents.default()
@@ -156,11 +157,14 @@ async def react_to_messages(message, message_lower):
         pass  # Suppresses all API-related errors (e.g., invalid emoji, rate limit)
 
 
-channels_blacklist = [GMC_DISCUSSION_THREAD, GMC_NO_CONTEXT_THREAD]
+channels_blacklist = [GMC_DISCUSSION_THREAD, GMC_NO_CONTEXT_THREAD, GMC_DANEEL_THREAD]
 
 
 @client.event
 async def on_message(message):
+    if str(message.channel.id) in channels_blacklist:
+        return
+    
     await client.process_commands(message)  # This line is required!
 
     message_lower = message.content.lower()
@@ -183,9 +187,6 @@ async def on_message(message):
     asyncio.create_task(react_to_messages(message, message_lower))
     # task.add_done_callback(lambda t: t.exception())  # Prevent warning if task crashes
     #  -- Its fine we don't care if it returns
-
-    if str(message.channel.id) in channels_blacklist:
-        return
 
     # DMs
     if isinstance(message.channel, discord.DMChannel):
