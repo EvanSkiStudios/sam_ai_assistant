@@ -1,6 +1,5 @@
 import asyncio
 import json
-import logging
 import sys
 from pathlib import Path
 
@@ -40,16 +39,26 @@ def session_information():
 
 
 def SAM_Create():
-    client = Client()
-    response = client.create(
-        model=sam_model_name,
-        from_=sam_ollama_model,
-        system=sam_rules,
-        stream=False,
-    )
-    # print(f"# Client: {response.status}")
-    logger.info(f"# Client: {response.status}")
-    return session_information()
+    try:
+        client = Client()
+        response = client.create(
+            model=sam_model_name,
+            from_=sam_ollama_model,
+            system=sam_rules,
+            stream=False,
+        )
+        # print(f"# Client: {response.status}")
+        logger.info(f"# Client: {response.status}")
+        return session_information()
+
+    except ConnectionError as e:
+        logger.error('Ollama is not running!')
+        sys.exit(1)  # Exit program with error code 1
+
+    except Exception as e:
+        # Catches any other unexpected errors
+        logger.error("❌ An unexpected error occurred:", e)
+        sys.exit(1)
 
 
 def build_system_prompt(user_name, user_nickname):
@@ -80,7 +89,7 @@ async def SAM_Message(message_author_name, message_author_nickname, message_cont
 
         if image_file_name:
             llm_response = await SAM_Converse_Image(
-                message_author_name, message_author_nickname, message_content, image_file_name, attachments
+                message_author_name, message_author_nickname, message_content, image_file_name, attachments, attachment_url
             )
         else:
             logger.error("IMAGE ERROR")
@@ -131,7 +140,7 @@ RESPONSE:\n{response.message.content}
     return response.message.content
 
 
-async def SAM_Converse_Image(user_name, user_nickname, user_input, image_file_name, attachments):
+async def SAM_Converse_Image(user_name, user_nickname, user_input, image_file_name, attachments, attachment_url):
     # check who we are currently talking too - if someone new is talking to us, fetch their memories
     # if it's a different user, cache the current history to file the swap out the memories
     await switch_current_user_speaking_too(user_name, user_input)
@@ -161,7 +170,7 @@ async def SAM_Converse_Image(user_name, user_nickname, user_input, image_file_na
 
     # Add the response to the messages to maintain the history
     new_chat_entries = [
-        {"role": "user", "name": user_name, "content": user_input, "attachments": attachments},
+        {"role": "user", "name": user_name, "content": user_input, "attachments": attachment_url},
         {"role": "assistant", "content": output},
     ]
     update_conversation_history(user_name, new_chat_entries)
