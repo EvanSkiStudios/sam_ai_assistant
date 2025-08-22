@@ -1,5 +1,7 @@
 import asyncio
 import os
+import re
+
 import discord
 
 import discord_commands as bc
@@ -14,13 +16,17 @@ from SAM import SAM_Create, SAM_Message
 load_dotenv()
 BOT_TOKEN = os.getenv("TOKEN")
 BOT_APPLICATION_ID = os.getenv("APPLICATION_ID")
+
 BOT_SERVER_ID = os.getenv("GMCD_SERVER_ID")
 BOT_TEST_SERVER_ID = os.getenv("TEST_SERVER_ID")
 BOT_DM_CHANNEL_ID = os.getenv("DM_CHANNEL_ID")
 BOT_CHANNEL_ID = os.getenv("GMCD_CHANNEL_ID")
+
 GMC_DISCUSSION_THREAD = os.getenv("GMCD_NOT_ALLOWED_THREAD_D")
 GMC_NO_CONTEXT_THREAD = os.getenv("GMCD_NOT_ALLOWED_THREAD_NC")
 GMC_DANEEL_THREAD = os.getenv("GMCD_DANEEL_STINKY")
+
+channels_blacklist = [GMC_DISCUSSION_THREAD, GMC_NO_CONTEXT_THREAD, GMC_DANEEL_THREAD]
 
 # set discord intents
 intents = discord.Intents.default()
@@ -157,9 +163,6 @@ async def react_to_messages(message, message_lower):
         pass  # Suppresses all API-related errors (e.g., invalid emoji, rate limit)
 
 
-channels_blacklist = [GMC_DISCUSSION_THREAD, GMC_NO_CONTEXT_THREAD, GMC_DANEEL_THREAD]
-
-
 @client.event
 async def on_message(message):
     if str(message.channel.id) in channels_blacklist:
@@ -175,11 +178,6 @@ async def on_message(message):
         return
     if message_lower.find(command_prefix) != -1:
         return
-
-    # if str(message.channel.id) == BOT_CHANNEL_ID:
-        # noinspection PyAsyncCall
-        # asyncio.create_task(summarize_chat(username, message.content))
-
     if message.author == client.user:
         return
 
@@ -205,6 +203,10 @@ async def on_message(message):
         await llm_chat(message, username, user_nickname, message_lower)
         return
 
+    for user in message.mentions:
+        message_lower = message_lower.replace(f"<@{user.id}>", f"@{user.name}")
+        message_lower = message_lower.replace(f"<@!{user.id}>", f"@{user.name}")
+
     # replying to bot directly
     if message.reference:
         referenced_message = await message.channel.fetch_message(message.reference.message_id)
@@ -213,23 +215,14 @@ async def on_message(message):
             await llm_chat(message, username, user_nickname, message_content)
             return
 
-    # todo - findout why pings only sometimes work
-
-    print(message)
-    # Pinging the bot
-    if BOT_APPLICATION_ID in message.raw_mentions:
-        print("BOT MENTION")
-
-    if client.user in message.mentions:
-        print("CLIENT MENTION")
-
-    if message_lower.find(str(BOT_APPLICATION_ID)) != -1:
-        message_content = message_lower.replace(f"<@{BOT_APPLICATION_ID}>", "")
+    # ping
+    if client.user.mentioned_in(message):
+        message_content = message_lower.replace(f"<@{BOT_APPLICATION_ID}>", "Sam ")
         await llm_chat(message, username, user_nickname, message_content)
         return
 
     # if the message includes "sam " it will trigger and run the code
-    if message_lower.find('sam ') != -1:
+    if re.search(r"\bsam[\s,.?!]", message_lower):
         await llm_chat(message, username, user_nickname, message_lower)
         return
 
