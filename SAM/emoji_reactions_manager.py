@@ -17,16 +17,26 @@ def is_emoji(text):
 
 
 def extract_emojis_and_words(text):
-    # \X matches grapheme clusters (i.e. user-perceived characters)
     clusters = regex.findall(r'\X', text)
 
     result = []
+    buffer = ""
     for cluster in clusters:
-        # Check if the whole cluster contains at least one emoji code point
         if regex.search(r'\p{Emoji}', cluster):
+            # flush buffer before adding emoji
+            if buffer:
+                result.append(buffer)
+                buffer = ""
             result.append(cluster)
-        elif not cluster.isspace():  # Skip whitespace
-            result.append(cluster)
+        elif not cluster.isspace():
+            buffer += cluster
+        else:
+            # flush buffer before whitespace
+            if buffer:
+                result.append(buffer)
+                buffer = ""
+    if buffer:
+        result.append(buffer)
 
     return result
 
@@ -125,7 +135,7 @@ async def llm_emoji_react_to_message(content, emote_dict):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": content}
         ],
-        options={'temperature': 0.2},  # Make responses more deterministic
+        options={'temperature': 0.2},  # Make responses less or more deterministic
     )
 
     output = response.message.content
@@ -137,8 +147,11 @@ async def llm_emoji_react_to_message(content, emote_dict):
     if output.lower() == "no reaction":
         output = ""
 
+    # print(output)
+
     # split response into an array
     emoji_list = clean_split(output)
+    # print(emoji_list)
 
     reaction_list = []
     for emote in emoji_list:

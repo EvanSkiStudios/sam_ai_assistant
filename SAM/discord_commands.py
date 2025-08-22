@@ -9,11 +9,12 @@ from memories.message_memory_manager import remove_user_conversation_file
 def command_set_activity(current_activity=None):
     possible_activities = [
         discord.Game(name="Hello Kitty Island Adventure", platform="steam", type=discord.ActivityType.playing),
-        discord.Streaming(name="Programming an AI LLM", url="https://www.twitch.tv/evanskistudios"),
+        discord.Streaming(name="Memes", url="https://www.twitch.tv/evanskistudios"),
         discord.Activity(type=discord.ActivityType.listening, name='Never Gonna Give You Up'),
         discord.Activity(type=discord.ActivityType.watching, name="Shrek 7"),
         discord.CustomActivity(name="Cheering Alyssa on!", emoji="🥳"),
         discord.CustomActivity(name="<coroutine object S.A.M at 0x000001AB2C3D4567>", emoji="😘"),
+        discord.CustomActivity(name="Fantasising about Rick Astley", emoji="😳"),
         None  # Clear status
     ]
 

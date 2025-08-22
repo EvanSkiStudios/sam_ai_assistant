@@ -4,6 +4,8 @@ import json
 # get location of memories
 running_dir = os.path.dirname(os.path.realpath(__file__))
 
+# todo -- make these tool calls
+
 
 def random_factoids():
     # get location of facts

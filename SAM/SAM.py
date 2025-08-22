@@ -117,7 +117,10 @@ async def SAM_Converse(user_name, user_nickname, user_input):
     response = await asyncio.to_thread(
         chat,
         model=sam_model_name,
-        messages=full_prompt
+        messages=full_prompt,
+        options={
+            "num_ctx": 8192
+        }
     )
 
     # Add the response to the messages to maintain the history
@@ -161,8 +164,11 @@ async def SAM_Converse_Image(user_name, user_nickname, user_input, image_file_na
     response = await asyncio.to_thread(
         chat,
         model=sam_vision_model,
-        messages=full_prompt + [{"role": "user", "name": user_name, "content": user_input, 'images': [path]}]
-        # options={'temperature': 0},  # Make responses more deterministic
+        messages=full_prompt + [{"role": "user", "name": user_name, "content": user_input, 'images': [path]}],
+        options={
+            "num_ctx": 8192
+            # options={'temperature': 0},  # Make responses more deterministic
+        }
     )
 
     output = response.message.content

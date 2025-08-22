@@ -213,9 +213,18 @@ async def on_message(message):
             await llm_chat(message, username, user_nickname, message_content)
             return
 
+    # todo - findout why pings only sometimes work
+
+    print(message)
     # Pinging the bot
+    if BOT_APPLICATION_ID in message.raw_mentions:
+        print("BOT MENTION")
+
+    if client.user in message.mentions:
+        print("CLIENT MENTION")
+
     if message_lower.find(str(BOT_APPLICATION_ID)) != -1:
-        message_content = message_lower.replace(f"<@{BOT_APPLICATION_ID}> ", "")
+        message_content = message_lower.replace(f"<@{BOT_APPLICATION_ID}>", "")
         await llm_chat(message, username, user_nickname, message_content)
         return
 
