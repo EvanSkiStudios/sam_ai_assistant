@@ -170,19 +170,19 @@ async def on_message(message):
     
     await client.process_commands(message)  # This line is required!
 
-    message_lower = message.content.lower()
+    message_content = message.content
     username = message.author.name
     user_nickname = message.author.display_name
 
     if message.mention_everyone:
         return
-    if message_lower.find(command_prefix) != -1:
+    if message_content.lower().find(command_prefix) != -1:
         return
     if message.author == client.user:
         return
 
     # noinspection PyAsyncCall
-    asyncio.create_task(react_to_messages(message, message_lower))
+    asyncio.create_task(react_to_messages(message, message_content))
     # task.add_done_callback(lambda t: t.exception())  # Prevent warning if task crashes
     #  -- Its fine we don't care if it returns
 
@@ -190,44 +190,44 @@ async def on_message(message):
     if isinstance(message.channel, discord.DMChannel):
         # print(f"{message_content}")
 
-        if message_lower.find('save history') != -1:
+        if message_content.lower().find('save history') != -1:
             output = await bc.command_save_history(username)
             await message.channel.send(output)
             return
 
-        if message_lower.find('delete history') != -1:
+        if message_content.lower().find('delete history') != -1:
             output = await bc.command_delete_history(username)
             await message.channel.send(output)
             return
 
-        await llm_chat(message, username, user_nickname, message_lower)
+        await llm_chat(message, username, user_nickname, message_content)
         return
 
     for user in message.mentions:
-        message_lower = message_lower.replace(f"<@{user.id}>", f"@{user.name}")
-        message_lower = message_lower.replace(f"<@!{user.id}>", f"@{user.name}")
+        message_lower = message_content.replace(f"<@{user.id}>", f"@{user.name}")
+        message_lower = message_content.replace(f"<@!{user.id}>", f"@{user.name}")
 
     # replying to bot directly
     if message.reference:
         referenced_message = await message.channel.fetch_message(message.reference.message_id)
         if referenced_message.author == client.user:
-            message_content = message_lower.replace(f"<@{BOT_APPLICATION_ID}>", "")
+            message_content = message_content.replace(f"<@{BOT_APPLICATION_ID}>", "")
             await llm_chat(message, username, user_nickname, message_content)
             return
 
     # ping
     if client.user.mentioned_in(message):
-        message_content = message_lower.replace(f"<@{BOT_APPLICATION_ID}>", "Sam ")
+        message_content = message_content.replace(f"<@{BOT_APPLICATION_ID}>", "Sam ")
         await llm_chat(message, username, user_nickname, message_content)
         return
 
     # if the message includes "sam " it will trigger and run the code
-    if re.search(r"\bsam[\s,.?!]", message_lower):
-        await llm_chat(message, username, user_nickname, message_lower)
+    if re.search(r"\bsam[\s,.?!]", message_content.lower()):
+        await llm_chat(message, username, user_nickname, message_content)
         return
 
-    if message_lower.endswith('sam'):
-        await llm_chat(message, username, user_nickname, message_lower)
+    if message_content.lower().endswith('sam'):
+        await llm_chat(message, username, user_nickname, message_content)
         return
 
 
