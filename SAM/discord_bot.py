@@ -204,8 +204,8 @@ async def on_message(message):
         return
 
     for user in message.mentions:
-        message_lower = message_content.replace(f"<@{user.id}>", f"@{user.name}")
-        message_lower = message_content.replace(f"<@!{user.id}>", f"@{user.name}")
+        message_content = message_content.replace(f"<@{user.id}>", f"@{user.name}")
+        message_content = message_content.replace(f"<@!{user.id}>", f"@{user.name}")
 
     # replying to bot directly
     if message.reference:
