@@ -12,21 +12,28 @@ ENGINE_ID = os.getenv("GOOGLE_SEARCH_ENGINE_ID")
 cse_client = requests.Session()
 
 SEARCH_QUERY = "evanskistudios"
-cse_url = f"https://customsearch.googleapis.com/customsearch/v1?key={API_KEY}&cx={ENGINE_ID}&q={SEARCH_QUERY}"
+cse_url = f"https://customsearch.googleapis.com/customsearch/v1?key={API_KEY}&cx={ENGINE_ID}"
 
-# Make a GET request to the CSE API
-response = cse_client.get(cse_url)
 
-# Parse JSON response and extract top result
-json_data = response.json()
-top_result = json_data["items"][0]
+def google_search(SEARCH_QUERY):
+    string = f"&q={SEARCH_QUERY}"
+    search_string = cse_url + string
 
-# Loop through all results and print cleanly
-if "items" in json_data:
-    for idx, item in enumerate(json_data["items"], start=1):
-        print(f"\nResult {idx}:")
-        print(f" Title: {item.get('title')}")
-        print(f" URL: {item.get('link')}")
-        print(f" Snippet: {item.get('snippet')}")
-else:
-    print("No results found.")
+    # Make a GET request to the CSE API
+    response = cse_client.get(search_string)
+
+    # Parse JSON response and extract top result
+    json_data = response.json()
+    top_result = json_data["items"][0]
+
+    # Loop through all results and print cleanly
+    if "items" in json_data:
+        # for idx, item in enumerate(json_data["items"], start=1):
+            # print(f"\nResult {idx}:")
+            # print(f" Title: {item.get('title')}")
+            # print(f" URL: {item.get('link')}")
+            # print(f" Snippet: {item.get('snippet')}")
+        return json_data
+    else:
+        print("No results found.")
+        return {}

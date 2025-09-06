@@ -7,15 +7,33 @@ def get_weather(city: str):
     return f"The weather in {city} is sunny and 25°C."
 
 
+get_weather_tool = {
+      'type': 'function',
+      'function': {
+        'name': 'get_weather',
+        'description': 'Get the current weather for a city',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'city': {
+              'type': 'string',
+              'description': 'The name of the city',
+            },
+          },
+          'required': ['city'],
+        },
+      },
+    }
+
 # Step 1: Ask the model to decide
 response = ollama.chat(
     model="llama3.2",
     messages=[
         {"role": "system",
-         "content": "You can call tools by outputting JSON in the format {\"tool\": ..., \"args\": {...}}."},
+         "content": "You are a JSON tool-calling assistant. Respond with JSON like {\"tool\": \"get_weather\", \"args\": {\"city\": \"CityName\"}}."},
         {"role": "user", "content": "What’s the weather in Paris?"}
     ],
-    tools=[get_weather]
+    tools=[get_weather_tool]
 )
 
 message = response["message"]["content"]

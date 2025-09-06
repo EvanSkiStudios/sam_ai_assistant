@@ -5,8 +5,8 @@ import json
 import ollama
 
 
-embedding_model = "nomic-embed-text"
-# "snowflake-arctic-embed2"
+embedding_model = "embeddinggemma"
+# "nomic-embed-text"
 
 
 def faiss_index_delete(user_name):
