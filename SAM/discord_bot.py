@@ -9,6 +9,7 @@ import discord_commands as bc
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from discord_bot_users_manager import handle_bot_message
 from emoji_reactions_manager import llm_emoji_react_to_message, gather_server_emotes
 from SAM import SAM_Create, SAM_Message
 
@@ -118,6 +119,11 @@ async def ping(ctx, *, arg=None):
 
 # ------- MESSAGE HANDLERS ---------
 async def llm_chat(message, username, user_nickname, message_content):
+    if message.author.bot:
+        result = handle_bot_message(username)
+        if result == -1:
+            return
+
     async with message.channel.typing():
         attachment_url = None
         attachments = None

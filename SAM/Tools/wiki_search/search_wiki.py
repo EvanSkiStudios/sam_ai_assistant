@@ -1,24 +1,26 @@
-import ollama
-import json
 from ollama import ChatResponse, chat
 
-from test_scripts.google_websearch import google_search
+from Tools.wiki_search.wiki_search import wiki_search
 
 
-def search_the_web(query):
-  return google_search(query)
+def search_wikipedia(query):
+    return wiki_search(query)
 
-messages = [{'role': 'user', 'content': 'Search the internet for evanskistudios'}]
+
+messages = [
+    {'role': 'system', 'content': 'You will be given a json of a wikipedia page summary, use it to answer the user'},
+    {'role': 'user', 'content': 'Search the wikipedia for donald trump'}
+]
 print('Prompt:', messages[0]['content'])
 
 available_functions = {
-  'search_the_web': search_the_web
+  'search_wikipedia': search_wikipedia
 }
 
 response: ChatResponse = chat(
   'llama3.2',
   messages=messages,
-  tools=[search_the_web],
+  tools=[search_wikipedia],
 )
 
 if response.message.tool_calls:

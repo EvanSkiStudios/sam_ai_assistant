@@ -4,6 +4,8 @@ from ollama import Client, chat, ChatResponse, AsyncClient
 from pathlib import Path
 
 
+vision_model = 'gemma3'
+
 async def main():
     # Go one directory up
     parent_dir = Path(__file__).resolve().parent.parent
@@ -12,7 +14,7 @@ async def main():
     client = AsyncClient()
 
     response = await client.chat(
-        model='gemma3',
+        model=vision_model,
         messages=[
             {"role": "system", "content": 'The user will provide you with an image. You will analyze the image and return a detailed description.'},
             {
