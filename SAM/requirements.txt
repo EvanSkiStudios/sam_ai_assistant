@@ -7,3 +7,4 @@ emoji~=2.14.1
 regex~=2024.11.6
 numpy~=2.2.6
 ijson~=3.4.0
+faiss-cpu~=1.12.0

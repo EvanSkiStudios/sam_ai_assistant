@@ -1,0 +1,12 @@
+[
+  "^\\s*(search|look up|find|check)\\b",
+  "^\\s*(google|bing|duckduckgo)\\s+(for|about)\\b",
+  "^\\s*show me\\b",
+  "^\\s*wikipedia\\s+(for|about)\\b",
+  "^\\s*(please\\s+)?(can|could|would|will)\\s+you\\s+(search|look up|find|check|google)\\b(?!\\s+(is|was|be)\\b)",
+  "^\\s*(please\\s+)?(search|look up|find|check)\\b",
+  "^\\s*(where|how|what)\\b.*\\b(find|look up|search|check)\\b",
+  "^\\s*(is there|are there|do you know if)\\b.*\\b(wikipedia|wiki)\\b.*\\b(page|pages|article|articles|entry)\\b",
+  "^\\s*(is there|are there)\\b.*\\b(page|pages|article|articles|website|websites|webpage|webpages|link|links|info|entry)\\b",
+  ".*\\b(check|find|look up|search)\\b.*\\b(internet|web|online|wikipedia)\\b"
+]
