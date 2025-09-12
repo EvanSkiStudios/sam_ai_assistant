@@ -14,8 +14,6 @@
  
  Use "$s help" for list of commands
  
- See Wiki for more
- 
  ### About
  SAM is designed to be able to manage talking to multiple users at the same time, as well as keep a long history with those users  
  See the [Wiki](https://github.com/EvanSkiStudios/sam_ai_assistant/wiki) for more information  
