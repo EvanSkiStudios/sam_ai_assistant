@@ -18,7 +18,7 @@
  
  ### About
  SAM is designed to be able to manage talking to multiple users at the same time, as well as keep a long history with those users  
- See the [Wiki](https://github.com/EvanSkiStudios/flukebot/wiki) for more information  
+ See the [Wiki](https://github.com/EvanSkiStudios/sam_ai_assistant/wiki) for more information  
  
  ### Discord Images
  Provided by Unsplash  
@@ -27,7 +27,8 @@
  https://unsplash.com/license  
 
  ### Bots this Bot will Interact with
- [Jbax1899's](https://github.com/jbax1899) ---- [RolyBot](https://github.com/jbax1899/RolyBot),  [Daneel](https://github.com/jbax1899/Daneel)    
  [Mercerenies'](https://github.com/Mercerenies) ---- [Marco](https://github.com/Mercerenies/marco-bot)     
  [Circaurus'](https://github.com/Circaurus) --- [Shawbot](https://github.com/Circaurus/Shawbot)  
- [Lukanibal's](https://github.com/Lukanibal) --- [Beelzebot](https://github.com/Lukanibal/Beelzebot)  
+ [Big-Mr-Kyle's](https://github.com/Big-Mr-Kyle) --- [Ungis](https://github.com/Big-Mr-Kyle/Ungis-the-pleasant)    
+ [Jbax1899's](https://github.com/jbax1899) ---- [RolyBot](https://github.com/jbax1899/RolyBot),  [Daneel](https://github.com/jbax1899/Daneel)     
+ [Lukanibal's](https://github.com/Lukanibal) --- [Beelzebot](https://github.com/Lukanibal/Beelzebot), [Staicy](https://github.com/Lukanibal/Staicy)       
