@@ -9,9 +9,14 @@ import discord_commands as bc
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from Tools.elevenlabs_voice import text_to_speech
 from discord_bot_users_manager import handle_bot_message
 from emoji_reactions_manager import llm_emoji_react_to_message, gather_server_emotes
 from SAM import SAM_Create, SAM_Message
+from utility_scripts.system_logging import setup_logger
+
+# configure logging
+logger = setup_logger(__name__)
 
 # Load Env
 load_dotenv()
@@ -124,6 +129,12 @@ async def llm_chat(message, username, user_nickname, message_content):
         if result == -1:
             return
 
+    is_tts_message = False
+    if not message.author.bot and re.search(r"\(tts\)", message_content, re.IGNORECASE):
+        logger.debug('Message is a TTS Message')
+        is_tts_message = True
+        message_content = re.sub(r"\(tts\)", "", message_content, flags=re.IGNORECASE)
+
     async with message.channel.typing():
         attachment_url = None
         attachments = None
@@ -144,10 +155,21 @@ async def llm_chat(message, username, user_nickname, message_content):
 
     for i, part in enumerate(response):
         if not message.author.bot and i == 0:
-            await message.reply(part)
-            # message_id = sent_message.id
+            sent_message = await message.reply(part)
         else:
             await message.channel.send(part)
+
+    if is_tts_message:
+        text = response[0]
+        if text is None:
+            logger.error('TTS Error')
+            return
+        text_filtered = re.sub(r"\*(.*?)\*", r"[\1]", text)
+
+        tts_file = await text_to_speech(text_filtered)
+        if sent_message:
+            await sent_message.reply(file=discord.File(tts_file))
+        os.remove(tts_file)
 
 
 async def react_to_messages(message, message_lower):
