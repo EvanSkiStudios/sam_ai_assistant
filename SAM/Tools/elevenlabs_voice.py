@@ -1,5 +1,7 @@
 import asyncio
 import os
+import re
+
 from dotenv import load_dotenv
 from elevenlabs.client import ElevenLabs
 from elevenlabs import play, VoiceSettings
@@ -19,7 +21,15 @@ client = ElevenLabs(
 )
 
 
-async def text_to_speech(text: str):
+def clean_text(text: str) -> str:
+    # Remove *...* and [...] including the markers
+    cleaned = re.sub(r"(\*.*?\*|\[.*?\])", "", text)
+    # Remove extra spaces
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned
+
+
+async def text_to_speech(text: str, file_name='text_to_speech'):
     logger.info("Starting TTS Message")
 
     def _blocking_tts():
@@ -42,7 +52,7 @@ async def text_to_speech(text: str):
             audio_bytes = b"".join(audio)
 
             # Save to file
-            file_path = "text_to_speech.mp3"
+            file_path = f"{clean_text(file_name)}.mp3"
             with open(file_path, "wb") as f:
                 f.write(audio_bytes)
 

@@ -161,12 +161,13 @@ async def llm_chat(message, username, user_nickname, message_content):
 
     if is_tts_message:
         text = response[0]
-        if text is None:
-            logger.error('TTS Error')
-            return
         text_filtered = re.sub(r"\*(.*?)\*", r"[\1]", text)
 
         tts_file = await text_to_speech(text_filtered)
+        if tts_file is None:
+            logger.error('TTS Error')
+            return
+
         if sent_message:
             await sent_message.reply(file=discord.File(tts_file))
         os.remove(tts_file)
